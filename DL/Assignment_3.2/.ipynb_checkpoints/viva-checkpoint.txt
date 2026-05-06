@@ -1,0 +1,687 @@
+ Fashion Clothing Classification using CNN on Fashion MNIST
+
+The notebook uses the Fashion MNIST Dataset to classify clothing images into different categories using a Convolutional Neural Network (CNN).
+
+Fashion MNIST contains grayscale images of clothes with size 28 × 28 pixels.
+
+Classes:
+
+1. T-shirt/top
+2. Trouser
+3. Pullover
+4. Dress
+5. Coat
+6. Sandal
+7. Shirt
+8. Sneaker
+9. Bag
+10. Ankle boot
+
+---
+
+ Step-by-Step Code Explanation
+
+ 1. Import Libraries
+
+```python
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+```
+
+ Explanation
+
+ `matplotlib.pyplot` → Used for displaying images and graphs.
+ `pandas` → Used to read CSV dataset files.
+ `numpy` → Used for numerical operations and array handling.
+
+---
+
+ 2. Load Dataset
+
+```python
+train_df = pd.read_csv('fashion-mnist_train.csv')
+test_df = pd.read_csv('fashion-mnist_test.csv')
+```
+
+ Explanation
+
+ Reads the Fashion MNIST training and testing datasets.
+ `train_df` contains training data.
+ `test_df` contains testing data.
+
+---
+
+ 3. Check Dataset Shape
+
+```python
+train_df.shape
+test_df.shape
+```
+
+ Explanation
+
+ Displays number of rows and columns.
+ Training dataset contains:
+
+   60,000 images
+ Testing dataset contains:
+
+   10,000 images
+
+Each row contains:
+
+ 1 label column
+ 784 pixel columns
+
+Total:
+
+```python
+784 = 28 × 28
+```
+
+---
+
+ 4. Statistical Information
+
+```python
+train_df.describe()
+```
+
+ Explanation
+
+ Gives statistical summary:
+
+   Mean
+   Minimum
+   Maximum
+   Standard deviation
+
+Useful for understanding dataset distribution.
+
+---
+
+ 5. Display Unique Labels
+
+```python
+train_df.label.unique()
+```
+
+ Explanation
+
+ Shows all unique class labels from 0–9.
+
+---
+
+ 6. Define Class Names
+
+```python
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress',
+               'Coat','Sandal', 'Shirt', 'Sneaker',
+               'Bag', 'Ankle boot']
+```
+
+ Explanation
+
+Maps numeric labels to clothing category names.
+
+Example:
+
+```python
+0 → T-shirt/top
+1 → Trouser
+```
+
+---
+
+ 7. Data Preprocessing
+
+ Training Data
+
+```python
+x_train = train_df.iloc[:,1:].to_numpy()
+x_train = x_train.reshape([-1,28,28,1])
+x_train = x_train / 255
+```
+
+ Explanation
+
+ `iloc[:,1:]`
+
+ Selects all pixel columns except label column.
+
+ `to_numpy()`
+
+ Converts dataframe into NumPy array.
+
+ `reshape([-1,28,28,1])`
+
+Converts flat 784 pixels into image format:
+
+```python
+28 × 28 × 1
+```
+
+Where:
+
+ 28 → height
+ 28 → width
+ 1 → grayscale channel
+
+ `x_train / 255`
+
+Normalizes pixel values from:
+
+```python
+0–255  →  0–1
+```
+
+This improves CNN performance.
+
+---
+
+ 8. Extract Training Labels
+
+```python
+y_train = train_df.iloc[:,0].to_numpy()
+```
+
+ Explanation
+
+ Extracts label column.
+ Stores clothing category numbers.
+
+---
+
+ 9. Prepare Testing Data
+
+```python
+x_test = test_df.iloc[:,1:].to_numpy()
+x_test = x_test.reshape([-1,28,28,1])
+x_test = x_test / 255
+```
+
+ Explanation
+
+Same preprocessing applied to testing images.
+
+---
+
+ 10. Extract Test Labels
+
+```python
+y_test = test_df.iloc[:,0].to_numpy()
+```
+
+ Explanation
+
+Stores actual labels for testing images.
+
+---
+
+ 11. Visualize Images
+
+```python
+plt.figure(figsize=(10,10))
+
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    plt.imshow(x_train[i], cmap=plt.cm.binary)
+    plt.xlabel(class_names[y_train[i]])
+
+plt.show()
+```
+
+ Explanation
+
+ Displays first 25 training images.
+ Shows corresponding clothing labels.
+ `cmap=plt.cm.binary` displays grayscale images.
+
+---
+
+ 12. Import CNN Layers
+
+```python
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout
+```
+
+ Explanation
+
+ `Sequential`
+
+Creates neural network layer-by-layer.
+
+ `Conv2D`
+
+Extracts image features using filters.
+
+ `MaxPooling2D`
+
+Reduces image dimensions.
+
+ `Dropout`
+
+Prevents overfitting.
+
+ `Flatten`
+
+Converts 2D data into 1D vector.
+
+ `Dense`
+
+Fully connected neural network layer.
+
+---
+
+ 13. Build CNN Model
+
+```python
+model = Sequential()
+
+model.add(Conv2D(filters=64,
+                 kernel_size=(3,3),
+                 input_shape=(28,28,1),
+                 activation='relu'))
+
+model.add(MaxPooling2D(pool_size=(2,2)))
+
+model.add(Dropout(rate=0.3))
+
+model.add(Flatten())
+
+model.add(Dense(units=32, activation='relu'))
+
+model.add(Dense(units=10, activation='sigmoid'))
+```
+
+---
+
+ Layer-by-Layer Explanation
+
+ Convolution Layer
+
+```python
+Conv2D(filters=64, kernel_size=(3,3))
+```
+
+ Purpose
+
+ Detects patterns like:
+
+   edges
+   textures
+   shapes
+
+ Parameters
+
+ `64 filters` → learns 64 features
+ `3×3 kernel` → filter size
+
+---
+
+ Max Pooling Layer
+
+```python
+MaxPooling2D(pool_size=(2,2))
+```
+
+ Purpose
+
+ Reduces image size.
+ Keeps important features.
+ Improves speed.
+
+---
+
+ Dropout Layer
+
+```python
+Dropout(rate=0.3)
+```
+
+ Purpose
+
+ Randomly disables 30% neurons during training.
+ Prevents overfitting.
+
+---
+
+ Flatten Layer
+
+```python
+Flatten()
+```
+
+ Purpose
+
+Converts 2D feature maps into 1D vector for Dense layers.
+
+---
+
+ Dense Hidden Layer
+
+```python
+Dense(units=32, activation='relu')
+```
+
+ Purpose
+
+Learns complex patterns.
+
+---
+
+ Output Layer
+
+```python
+Dense(units=10, activation='sigmoid')
+```
+
+ Purpose
+
+Predicts one of 10 clothing classes.
+
+---
+
+ 14. Compile Model
+
+```python
+model.compile(loss='sparse_categorical_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+```
+
+ Explanation
+
+ Loss Function
+
+```python
+sparse_categorical_crossentropy
+```
+
+Used for multi-class classification.
+
+ Optimizer
+
+```python
+adam
+```
+
+Updates weights efficiently.
+
+ Metrics
+
+```python
+accuracy
+```
+
+Measures prediction accuracy.
+
+---
+
+ 15. Train Model
+
+```python
+model.fit(x_train,
+          y_train,
+          epochs=50,
+          batch_size=1200,
+          validation_split=0.05)
+```
+
+ Explanation
+
+ Epochs
+
+```python
+epochs=50
+```
+
+Model trains 50 times on full dataset.
+
+ Batch Size
+
+```python
+batch_size=1200
+```
+
+Processes 1200 images at once.
+
+ Validation Split
+
+```python
+validation_split=0.05
+```
+
+Uses 5% data for validation.
+
+---
+
+ 16. Evaluate Model
+
+```python
+evaluation = model.evaluate(x_test, y_test)
+```
+
+ Explanation
+
+Tests model performance on unseen data.
+
+---
+
+ 17. Print Accuracy
+
+```python
+print(f"Accuracy: {evaluation[1]}")
+```
+
+ Explanation
+
+Displays testing accuracy.
+
+Example:
+
+```python
+Accuracy: 0.91
+```
+
+Means:
+
+```python
+91% images classified correctly
+```
+
+---
+
+ 18. Predict Classes
+
+```python
+y_probas = model.predict(x_test)
+y_pred = y_probas.argmax(axis=-1)
+```
+
+ Explanation
+
+ `predict()`
+
+Generates probability for each class.
+
+ `argmax()`
+
+Selects class with highest probability.
+
+---
+
+ 19. Display Predicted Images
+
+```python
+plt.figure(figsize=(10,10))
+
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    plt.imshow(x_test[i], cmap=plt.cm.binary)
+    plt.title(f"Pred:{class_names[y_pred[i]]}")
+
+plt.show()
+```
+
+ Explanation
+
+Displays predicted class names for test images.
+
+---
+
+ 20. Classification Report
+
+```python
+from sklearn.metrics import classification_report
+
+num_classes = 10
+class_names = ["class {}".format(i) for i in range(num_classes)]
+
+cr = classification_report(y_test,
+                           y_pred,
+                           target_names=class_names)
+
+print(cr)
+```
+
+ Explanation
+
+Shows:
+
+ Precision
+ Recall
+ F1-score
+ Accuracy
+
+for each class.
+
+---
+
+ 20 Viva Questions with Answers
+
+ 1. What is CNN?
+
+A CNN is a deep learning algorithm mainly used for image processing and classification.
+
+---
+
+ 2. What is Fashion MNIST?
+
+Fashion MNIST is a dataset of grayscale clothing images used for machine learning.
+
+---
+
+ 3. Why do we use CNN for image classification?
+
+CNN automatically extracts important image features like edges and patterns.
+
+---
+
+ 4. What is the image size in Fashion MNIST?
+
+28 × 28 pixels.
+
+---
+
+ 5. How many classes are present in Fashion MNIST?
+
+10 classes.
+
+---
+
+ 6. What is the role of Conv2D layer?
+
+It extracts features from images using filters.
+
+---
+
+ 7. What is a filter in CNN?
+
+A filter is a small matrix used to detect patterns in images.
+
+---
+
+ 8. Why is MaxPooling used?
+
+To reduce image dimensions and computation.
+
+---
+
+ 9. What is Flatten layer?
+
+It converts 2D feature maps into 1D vector.
+
+---
+
+ 10. What is Dropout?
+
+A regularization technique used to reduce overfitting.
+
+---
+
+ 11. What is overfitting?
+
+When model performs well on training data but poorly on testing data.
+
+---
+
+ 12. Why do we normalize data?
+
+To scale values between 0 and 1 for better training.
+
+---
+
+ 13. What is activation function?
+
+It decides whether a neuron should activate or not.
+
+---
+
+ 14. Why is ReLU used?
+
+ReLU improves learning speed and avoids vanishing gradient problem.
+
+---
+
+ 15. What does Adam optimizer do?
+
+It updates model weights efficiently during training.
+
+---
+
+ 16. What is an epoch?
+
+One complete cycle through the training dataset.
+
+---
+
+ 17. What is batch size?
+
+Number of samples processed at one time during training.
+
+---
+
+ 18. What is accuracy?
+
+Percentage of correctly predicted samples.
+
+---
+
+ 19. What is classification_report?
+
+It gives precision, recall, F1-score, and support values.
+
+---
+
+ 20. What is the output layer size in this model?
+
+10 neurons because there are 10 clothing categories.

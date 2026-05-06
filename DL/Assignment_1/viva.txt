@@ -1,0 +1,259 @@
+Understood. I will give you a **clear, step-by-step code explanation** followed by **20 viva questions with precise answers**—in simple, professional language suitable for exams and interviews.
+
+---
+
+# 🧠 Code Explanation (Boston Housing using DNN)
+
+## 🔹 1. Import Libraries
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+```
+
+* **NumPy** → numerical operations
+* **Pandas** → handling dataset (table format)
+* **Matplotlib** → plotting graphs
+
+```python
+from sklearn.datasets import fetch_openml
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+```
+
+* `fetch_openml` → loads Boston dataset
+* `train_test_split` → splits data into training & testing
+* `StandardScaler` → normalizes data
+
+```python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+```
+
+* **Sequential** → model where layers are added one after another
+* **Dense** → fully connected neural network layer
+
+---
+
+## 🔹 2. Load Dataset
+
+```python
+boston = fetch_openml(name='boston', version=1, as_frame=True)
+
+X = boston.data
+y = boston.target
+```
+
+* `X` → input features (crime rate, rooms, etc.)
+* `y` → target variable (house price)
+
+---
+
+## 🔹 3. Split Data
+
+```python
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+```
+
+* 80% → training data
+* 20% → testing data
+* `random_state` ensures reproducibility
+
+---
+
+## 🔹 4. Feature Scaling
+
+```python
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+```
+
+* Converts data to same scale (mean = 0, std = 1)
+* Helps faster and stable learning
+
+---
+
+## 🔹 5. Build Deep Neural Network
+
+```python
+model = Sequential()
+
+model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(16, activation='relu'))
+
+model.add(Dense(1))
+```
+
+### Explanation:
+
+* **64 neurons layer** → learns initial patterns
+* **32 neurons** → deeper feature learning
+* **16 neurons** → refined patterns
+* **Output layer (1 neuron)** → predicts house price
+
+👉 `ReLU` = activation function to introduce non-linearity
+
+---
+
+## 🔹 6. Compile Model
+
+```python
+model.compile(
+    optimizer='adam',
+    loss='mse',
+    metrics=['mae']
+)
+```
+
+* **Adam** → efficient optimizer
+* **MSE (Mean Squared Error)** → loss function
+* **MAE** → evaluation metric
+
+---
+
+## 🔹 7. Train Model
+
+```python
+history = model.fit(
+    X_train,
+    y_train,
+    epochs=100,
+    validation_split=0.2,
+    batch_size=16
+)
+```
+
+* Model learns patterns from data
+* `epochs=100` → training repeated 100 times
+* `validation_split=0.2` → 20% used for validation
+* `batch_size=16` → processes 16 samples at a time
+
+---
+
+## 🔹 8. Evaluate Model
+
+```python
+loss, mae = model.evaluate(X_test, y_test)
+```
+
+* Tests model on unseen data
+
+---
+
+## 🔹 9. Prediction
+
+```python
+predictions = model.predict(X_test)
+```
+
+* Predicts house prices
+
+---
+
+## 🔹 10. Plot Graph
+
+```python
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.legend(['Training Loss', 'Validation Loss'])
+plt.show()
+```
+
+* Shows how model improves during training
+
+---
+
+# 🎓 Viva Questions with Answers
+
+## 🔸 Basic Concepts
+
+1. **What is regression?**
+   Predicting continuous values.
+
+2. **Why Boston dataset is used?**
+   It is a standard dataset for regression problems.
+
+3. **What is DNN?**
+   Neural network with multiple hidden layers.
+
+4. **Difference between Linear Regression and DNN?**
+   Linear → simple
+   DNN → captures complex relationships
+
+5. **What is feature scaling?**
+   Normalizing data to same range.
+
+---
+
+## 🔸 Model & Training
+
+6. **What is Sequential model?**
+   Layers arranged one after another.
+
+7. **What is Dense layer?**
+   Fully connected layer.
+
+8. **What is activation function?**
+   Adds non-linearity to model.
+
+9. **Why use ReLU?**
+   Fast and avoids vanishing gradient.
+
+10. **What is epoch?**
+    One full training cycle.
+
+---
+
+## 🔸 Loss & Optimization
+
+11. **What is MSE?**
+    Average squared error between actual and predicted values.
+
+12. **What is MAE?**
+    Average absolute error.
+
+13. **Why use Adam optimizer?**
+    Adaptive and efficient.
+
+14. **What is loss function?**
+    Measures prediction error.
+
+---
+
+## 🔸 Data Handling
+
+15. **What is train-test split?**
+    Dividing data into training and testing sets.
+
+16. **What is overfitting?**
+    Model performs well on training but poorly on test data.
+
+17. **What is underfitting?**
+    Model fails to learn patterns.
+
+18. **What is validation data?**
+    Used to evaluate model during training.
+
+---
+
+## 🔸 Practical Understanding
+
+19. **Why use neural network for regression?**
+    To capture complex non-linear patterns.
+
+20. **What is output layer in regression?**
+    Single neuron giving continuous value.
+
+---
+
+If you want, I can next:
+
+* Provide **short 1-line answers for quick revision**
+* Give **project explanation for viva presentation**
+* Add **common mistakes & debugging tips for VS Code**

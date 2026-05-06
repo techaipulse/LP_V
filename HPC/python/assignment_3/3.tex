@@ -1,0 +1,79 @@
+🎯 Oral (Viva) Questions & Answers
+
+ 🔹 Basic
+
+Q1. What is reduction?
+Combining multiple values into a single result (sum, min, max, avg).
+
+Q2. Examples of reduction operations?
+Sum, minimum, maximum, average.
+
+---
+
+ 🔹 Parallel Concepts
+
+Q3. What is Parallel Reduction?
+Dividing data among threads, computing partial results, and combining them.
+
+Q4. Why is reduction efficient in parallel?
+Because operations are independent and associative.
+
+Q5. What is associative operation?
+(a + b) + c = a + (b + c)
+
+---
+
+ 🔹 Code-Based
+
+Q6. What is chunking?
+Splitting array into smaller parts for threads.
+
+Q7. What is partial result?
+Result computed by each thread on its chunk.
+
+Q8. How are results combined?
+Using sum(), min(), max() on partial outputs.
+
+---
+
+ 🔹 Advanced
+
+Q9. What is OpenMP reduction clause?
+`pragma omp parallel for reduction(+:sum)`
+
+Q10. Why Python is not fully parallel?
+Due to GIL (Global Interpreter Lock).
+
+---
+
+ 🔢 Example with Diagram
+
+ Example Array:
+
+```text
+[5, 3, 8, 4, 2]
+```
+
+ Step 1: Split into chunks
+
+```text
+[5, 3]   [8, 4]   [2]
+```
+
+ Step 2: Compute partial results
+
+```text
+Thread 1 → sum=8, min=3, max=5
+Thread 2 → sum=12, min=4, max=8
+Thread 3 → sum=2, min=2, max=2
+```
+
+ Step 3: Combine results
+
+```text
+Total Sum = 8 + 12 + 2 = 22
+Min = 2
+Max = 8
+Average = 22 / 5 = 4.4
+```
+

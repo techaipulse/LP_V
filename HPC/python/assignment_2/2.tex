@@ -1,0 +1,85 @@
+ 🎯 Oral (Viva) Questions & Answers
+
+ 🔹 Basic
+
+Q1. What is Bubble Sort?
+Repeatedly swaps adjacent elements if they are in wrong order.
+
+Q2. Time complexity of Bubble Sort?
+O(n²)
+
+Q3. What is Merge Sort?
+Divide array into halves, sort and merge.
+
+Q4. Time complexity of Merge Sort?
+O(n log n)
+
+---
+
+ 🔹 Parallel Concepts
+
+Q5. How is Bubble Sort parallelized?
+Using Odd-Even Transposition method.
+
+Q6. How is Merge Sort parallelized?
+Left and right halves are sorted simultaneously.
+
+Q7. Which algorithm benefits more from parallelism?
+Merge Sort (because independent subproblems).
+
+---
+
+ 🔹 Code-Based
+
+Q8. What is ThreadPoolExecutor?
+Used to run tasks in parallel threads.
+
+Q9. Why measure time?
+To compare performance of sequential vs parallel.
+
+Q10. Why Bubble Sort shows less improvement?
+Because it is inherently sequential.
+
+---
+
+ 🔹 Advanced
+
+Q11. What is OpenMP?
+API for parallel programming using directives.
+
+Q12. Why Python is not fully parallel?
+Because of GIL.
+
+---
+
+ 🔢 Example with Diagram
+
+ Example Array:
+
+```
+[5, 3, 8, 4, 2]
+```
+
+
+Passes:
+
+```
+[5,3,8,4,2]
+→ [3,5,8,4,2]
+→ [3,5,4,8,2]
+→ [3,5,4,2,8]
+...
+→ [2,3,4,5,8]
+```
+
+```
+Divide:
+[5,3,8,4,2]
+→ [5,3] [8,4,2]
+→ [5] [3] [8] [4,2]
+
+Merge:
+→ [3,5] [2,4,8]
+→ [2,3,4,5,8]
+```
+

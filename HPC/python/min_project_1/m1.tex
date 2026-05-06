@@ -1,0 +1,176 @@
+
+> “Evaluate performance enhancement of Parallel Quicksort using MPI”
+
+
+ ✅ 🧠 Concept (Short)
+
+ Quicksort → Divide array using a pivot
+ Parallel Quicksort (MPI) → split data across processes and sort concurrently
+ Uses MPI via mpi4py
+
+---
+
+ 💻 ✅ Python MPI Code (Parallel Quicksort + Timing)
+
+> ⚠️ Run using: `mpiexec -n 4 python file.py`
+
+```python id="mpi_qs"
+from mpi4py import MPI
+import numpy as np
+import time
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+
+ ----------- GENERATE DATA (only root) -----------
+n = int(input("Enter size of array: ")) if rank == 0 else None
+n = comm.bcast(n, root=0)
+
+if rank == 0:
+    data = np.random.randint(1, 100, n)
+    print("Original Array:", data)
+else:
+    data = None
+
+ ----------- SCATTER DATA -----------
+chunk = np.zeros(n // size, dtype=int)
+comm.Scatter(data, chunk, root=0)
+
+ ----------- LOCAL QUICK SORT -----------
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr)//2]
+    left = arr[arr < pivot]
+    middle = arr[arr == pivot]
+    right = arr[arr > pivot]
+    return np.concatenate((quicksort(left), middle, quicksort(right)))
+
+start = MPI.Wtime()
+
+local_sorted = quicksort(chunk)
+
+ ----------- GATHER RESULTS -----------
+gathered = None
+if rank == 0:
+    gathered = np.zeros(n, dtype=int)
+
+comm.Gather(local_sorted, gathered, root=0)
+
+end = MPI.Wtime()
+
+ ----------- FINAL MERGE (ROOT) -----------
+if rank == 0:
+    final_sorted = quicksort(gathered)
+    print("\nParallel Sorted:", final_sorted)
+    print("Parallel Time:", end - start)
+
+
+ ----------- SEQUENTIAL COMPARISON -----------
+if rank == 0:
+    start = time.time()
+    seq_sorted = quicksort(data)
+    end = time.time()
+    print("\nSequential Sorted:", seq_sorted)
+    print("Sequential Time:", end - start)
+```
+
+---
+
+ ⚙️ How it Works (Step-by-Step)
+
+1. Root process generates array
+2. Data is divided (Scatter) among processes
+3. Each process runs local quicksort
+4. Results are collected (Gather)
+5. Final merge on root
+
+---
+
+ 📊 Performance Idea
+
+| Type           | Time   |
+| -------------- | ------ |
+| Sequential     | Higher |
+| Parallel (MPI) | Lower  |
+
+👉 Speed improves as number of processes increases
+
+---
+
+ 🔢 Example
+
+ Input:
+
+```text
+[5, 3, 8, 4, 2, 7, 1, 6]
+```
+
+ Parallel Distribution:
+
+```text
+P1 → [5,3]
+P2 → [8,4]
+P3 → [2,7]
+P4 → [1,6]
+```
+
+ Final Output:
+
+```text
+[1,2,3,4,5,6,7,8]
+```
+
+
+ 🎯 Viva (Oral) Questions & Answers
+
+ 🔹 Basics
+
+Q1. What is Quicksort?
+Divide-and-conquer sorting algorithm.
+
+Q2. Complexity?
+Average: O(n log n)
+
+---
+
+ 🔹 MPI Concepts
+
+Q3. What is MPI?
+Message Passing Interface for distributed computing.
+
+Q4. What is Scatter?
+Distributes data to processes.
+
+Q5. What is Gather?
+Collects results from processes.
+
+---
+
+ 🔹 Parallel Quicksort
+
+Q6. How is quicksort parallelized?
+Data split across processes, sorted independently.
+
+Q7. Why is it faster?
+Multiple processors work simultaneously.
+
+---
+
+ 🔹 Performance
+
+Q8. What is speedup?
+Sequential time / Parallel time.
+
+Q9. What is efficiency?
+Speedup / number of processors.
+
+---
+
+ 🔹 Limitations
+
+Q10. Overhead in MPI?
+Communication cost between processes.
+
+

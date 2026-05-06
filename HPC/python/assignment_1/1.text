@@ -1,0 +1,120 @@
+- 🎯 Oral (Viva) Questions & Answers
+
+ 🔹 Basic Concepts
+
+Q1. What is BFS?
+Breadth First Search is a traversal technique that visits nodes level by level using a queue.
+
+Q2. What is DFS?
+Depth First Search explores nodes as deep as possible first using recursion or stack.
+
+Q3. Difference between BFS and DFS?
+
+ BFS → Level-wise, uses queue
+ DFS → Depth-wise, uses recursion/stack
+
+Q4. Time complexity of BFS and DFS?
+Both are O(V + E)
+
+---
+
+ 🔹 Parallel Concepts
+
+Q5. What is Parallel BFS?
+Processing nodes at the same level simultaneously using threads.
+
+Q6. What is Parallel DFS?
+Executing recursive branches in parallel like independent tasks.
+
+Q7. What is OpenMP?
+An API used for parallel programming in C/C++ using compiler directives.
+
+Q8. Why are we not using real OpenMP in Python?
+Python does not support OpenMP directly and has GIL (Global Interpreter Lock).
+
+---
+
+ 🔹 Code-Based Questions
+
+Q9. What is the role of `ThreadPoolExecutor`?
+It creates a pool of threads to execute tasks in parallel.
+
+Q10. Why is `visited` used?
+To avoid visiting the same node multiple times.
+
+Q11. What is a race condition?
+When multiple threads modify shared data (like `visited`) simultaneously.
+
+Q12. How to fix race condition?
+By using Locks (thread synchronization).
+
+---
+
+ 🔹 Logical Questions
+
+Q13. Where is parallelism applied in BFS?
+At each level of nodes.
+
+Q14. Where is parallelism applied in DFS?
+At recursive calls (branches).
+
+Q15. Which is better for shortest path?
+BFS.
+
+---
+ Graph Representation
+
+```
+0 → 1, 2
+1 → 0, 3, 4
+2 → 0, 5
+3 → 1
+4 → 1, 5
+5 → 2, 4
+```
+
+---
+
+ 🚀 BFS Step-by-Step (Start = 0)
+
+| Step | Queue   | Output |
+| ---- | ------- | ------ |
+| 1    | [0]     | 0      |
+| 2    | [1,2]   | 1,2    |
+| 3    | [3,4,5] | 3,4,5  |
+
+ ✅ Final BFS Output:
+
+```
+[0] [1, 2] [3, 4, 5]
+```
+
+👉 In Parallel BFS, nodes `[1,2]` are processed together.
+
+---
+
+ 🌳 DFS Step-by-Step (Start = 0)
+
+Traversal path:
+
+```
+0 → 1 → 3 → back → 4 → 5 → 2
+```
+
+ ✅ Final DFS Output:
+
+```
+0 1 3 4 5 2
+```
+
+👉 In Parallel DFS, branches like `1 → 3` and `2 → 5` can run simultaneously.
+
+---
+
+ 🎯 Short Explanation (Exam Writing)
+
+ BFS uses queue and explores level-wise
+ DFS uses recursion and explores depth-wise
+ Parallel BFS → processes nodes at same level simultaneously
+ Parallel DFS → executes recursive calls in parallel
+ ThreadPoolExecutor is used to simulate OpenMP
