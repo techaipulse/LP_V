@@ -1,0 +1,359 @@
+# Parallel Reduction Operations in Python
+
+## Aim
+
+Implement **Minimum, Maximum, Sum, and Average** operations using **Parallel Reduction** in Python.
+
+---
+
+# Python Program using Multiprocessing
+
+```python
+import multiprocessing
+
+# Function to calculate partial sum
+def partial_sum(data):
+    return sum(data)
+
+# Function to calculate partial minimum
+def partial_min(data):
+    return min(data)
+
+# Function to calculate partial maximum
+def partial_max(data):
+    return max(data)
+
+if __name__ == "__main__":
+
+    # Input data
+    numbers = [10, 20, 30, 40, 50, 60, 70, 80]
+
+    # Number of processes
+    num_processes = 4
+
+    # Divide data into chunks
+    chunk_size = len(numbers) // num_processes
+    chunks = [numbers[i:i + chunk_size] for i in range(0, len(numbers), chunk_size)]
+
+    # Create process pool
+    pool = multiprocessing.Pool(processes=num_processes)
+
+    # Parallel Sum
+    partial_sums = pool.map(partial_sum, chunks)
+    total_sum = sum(partial_sums)
+
+    # Parallel Minimum
+    partial_mins = pool.map(partial_min, chunks)
+    minimum = min(partial_mins)
+
+    # Parallel Maximum
+    partial_maxs = pool.map(partial_max, chunks)
+    maximum = max(partial_maxs)
+
+    # Average
+    average = total_sum / len(numbers)
+
+    # Output
+    print("Numbers:", numbers)
+    print("Sum =", total_sum)
+    print("Minimum =", minimum)
+    print("Maximum =", maximum)
+    print("Average =", average)
+
+    pool.close()
+    pool.join()
+```
+
+---
+
+# Output Example
+
+```text
+Numbers: [10, 20, 30, 40, 50, 60, 70, 80]
+Sum = 360
+Minimum = 10
+Maximum = 80
+Average = 45.0
+```
+
+---
+
+# Explanation of Program
+
+## 1. Import Multiprocessing Module
+
+```python
+import multiprocessing
+```
+
+* Used for parallel execution using multiple CPU cores.
+
+---
+
+## 2. Create Functions
+
+```python
+def partial_sum(data):
+    return sum(data)
+```
+
+* Calculates sum of each chunk.
+
+```python
+def partial_min(data):
+    return min(data)
+```
+
+* Finds minimum value in chunk.
+
+```python
+def partial_max(data):
+    return max(data)
+```
+
+* Finds maximum value in chunk.
+
+---
+
+## 3. Input Data
+
+```python
+numbers = [10, 20, 30, 40, 50, 60, 70, 80]
+```
+
+* List of elements for reduction operations.
+
+---
+
+## 4. Divide Data into Chunks
+
+```python
+chunks = [numbers[i:i + chunk_size] for i in range(0, len(numbers), chunk_size)]
+```
+
+* Data is divided among processes.
+
+Example:
+
+```text
+[10,20]
+[30,40]
+[50,60]
+[70,80]
+```
+
+---
+
+## 5. Create Process Pool
+
+```python
+pool = multiprocessing.Pool(processes=num_processes)
+```
+
+* Creates multiple worker processes.
+
+---
+
+## 6. Parallel Reduction Operations
+
+### Sum
+
+```python
+partial_sums = pool.map(partial_sum, chunks)
+```
+
+Each process calculates local sum.
+
+Then:
+
+```python
+total_sum = sum(partial_sums)
+```
+
+Final reduction combines results.
+
+---
+
+### Minimum
+
+```python
+partial_mins = pool.map(partial_min, chunks)
+minimum = min(partial_mins)
+```
+
+---
+
+### Maximum
+
+```python
+partial_maxs = pool.map(partial_max, chunks)
+maximum = max(partial_maxs)
+```
+
+---
+
+### Average
+
+```python
+average = total_sum / len(numbers)
+```
+
+---
+
+# Comparison Between Python and C++ Parallel Reduction
+
+| Feature           | Python                | C++                        |
+| ----------------- | --------------------- | -------------------------- |
+| Parallel Library  | multiprocessing       | OpenMP                     |
+| Performance       | Slower                | Faster                     |
+| Execution Speed   | Moderate              | High                       |
+| Ease of Coding    | Easy                  | Moderate                   |
+| Memory Usage      | More                  | Less                       |
+| Compilation       | No compilation        | Requires compilation       |
+| CPU Utilization   | Good                  | Excellent                  |
+| Best For          | Learning, Prototyping | High-performance computing |
+| Syntax Complexity | Simple                | Complex                    |
+| Parallel Support  | Built-in modules      | Compiler directives        |
+
+---
+
+# Advantages of Parallel Reduction
+
+1. Faster execution
+2. Better CPU utilization
+3. Handles large datasets efficiently
+4. Reduces computation time
+5. Improves performance in multi-core systems
+
+---
+
+# Applications of Parallel Reduction
+
+1. Big Data Processing
+2. Scientific Computing
+3. Image Processing
+4. Machine Learning
+5. Statistical Analysis
+6. Real-time Systems
+
+---
+
+# Viva Questions and Answers
+
+## 1. What is parallel reduction?
+
+Parallel reduction is a technique used to combine multiple values into a single result using parallel processing.
+
+---
+
+## 2. What are reduction operations?
+
+Operations like sum, minimum, maximum, and average are called reduction operations.
+
+---
+
+## 3. Why is parallel reduction used?
+
+It improves performance by dividing work among multiple processors.
+
+---
+
+## 4. What is multiprocessing in Python?
+
+It is a module that allows execution of multiple processes simultaneously.
+
+---
+
+## 5. What is a process pool?
+
+A pool manages multiple worker processes for parallel execution.
+
+---
+
+## 6. What is chunking in parallel computing?
+
+Dividing data into smaller parts for parallel execution is called chunking.
+
+---
+
+## 7. How is average calculated in reduction?
+
+Average = Total Sum / Number of Elements.
+
+---
+
+## 8. Which operation combines partial results?
+
+Reduction operation combines partial results.
+
+---
+
+## 9. Why is C++ faster than Python?
+
+C++ is compiled and closer to hardware execution.
+
+---
+
+## 10. What is OpenMP?
+
+OpenMP is an API used for parallel programming in C and C++.
+
+---
+
+## 11. What is the role of CPU cores in parallel processing?
+
+Multiple CPU cores execute tasks simultaneously.
+
+---
+
+## 12. What is synchronization?
+
+Synchronization controls access to shared resources in parallel execution.
+
+---
+
+## 13. What is load balancing?
+
+Distributing workload equally among processors.
+
+---
+
+## 14. What is speedup in parallel computing?
+
+Speedup measures performance improvement over sequential execution.
+
+---
+
+## 15. What is scalability?
+
+Ability of a system to handle increased workload efficiently.
+
+---
+
+## 16. What happens if data is not divided properly?
+
+Some processes may remain idle, reducing efficiency.
+
+---
+
+## 17. What is the difference between sequential and parallel execution?
+
+Sequential executes one task at a time, while parallel executes multiple tasks simultaneously.
+
+---
+
+## 18. What is overhead in parallel computing?
+
+Extra time required for managing processes and communication.
+
+---
+
+## 19. What are real-world uses of reduction operations?
+
+Used in analytics, AI, simulations, and scientific applications.
+
+---
+
+## 20. What is the main benefit of parallel reduction?
+
+Reduced execution time and improved computational efficiency.
